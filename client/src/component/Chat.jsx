@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import queryString from "query-string";
+// import queryString from "query-string";
 import io from "socket.io-client";
 
 let socket;
@@ -9,7 +9,6 @@ const Chat = () => {
   const ENDPOINT = "localhost:5000";
   const location = useLocation();
   // console.log(location);
-  console.log(location);
   useEffect(()=> {
     const {name, room} = location.state;
     console.log(name, room);
@@ -17,7 +16,15 @@ const Chat = () => {
     socket = io(ENDPOINT);
     console.log(socket);
 
-    socket.emit('join', {name, room});
+    socket.emit('join', {name, room}, ( ) => {
+      // alert(error);
+    });
+
+    return () => {
+      socket.emit('disconnect');
+
+      socket.off();
+    }
   }, [ENDPOINT, location.state]);
   
 
